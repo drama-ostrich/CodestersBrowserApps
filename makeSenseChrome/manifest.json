@@ -1,0 +1,21 @@
+{
+  "name": "Codesters MakeSense!",
+  "description": "Allows MakeSense! device integration with Codesters.com projects",
+  "version": "0.1",
+  "manifest_version": 2,
+  "app": {
+    "background": {
+      "scripts": ["background.js"]
+    }
+  },
+  "icons": { "16": "codesters-16.png", "128": "codesters-128.png" },
+  "permissions": ["hid", {
+    "usbDevices": [
+      { "vendorId": 1240, "productId": 62570  }
+    ]
+  }],
+  "externally_connectable": {
+    "matches": ["http://127.0.0.1:8887/bench.html"]
+  }
+
+}
