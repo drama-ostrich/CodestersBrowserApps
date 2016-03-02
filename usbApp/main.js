@@ -1,55 +1,12 @@
-// Top level functions for chrome app
-
-
-var connectDevice = function(device, deviceName) {
-
-  // if the device establishes a connection, add a .connection property
-  // to the device to check later
-  // this way we can associate connections with devices in the future
-
-  if (device) {
-      device.connection = null;
-
-      chrome.hid.connect(device.deviceId, function(connectInfo) {
-          if (!connectInfo) {
-              console.warn("Unable to connect to device: " + deviceName);
-          } else {
-              connection = connectInfo.connectionId;
-              device.connection = connection;
-              console.log("Connected to " + deviceName + " with ID: " + connection);
-              console.log(device.connection)
-              checkAll();
-              enablePolling(true);
-              ui.makesenseDetected.innerHTML = "IO Board Connected";
-          }
-
-      });
-  } else {
-      console.warn("Unable to connect to device: " + deviceName);
-  }
-  return device;
-};
-
+// Codesters USB App
+// by Codesters
+var makesenseDevice;
 
 var discoverDevices = function(devices) {
-  // This is called as a callback from the chrome.hid.getDevices()
-  // command in initializeWindow();
+  // This is called as a callback from chrome.hid.getDevices()
 
-  makesenseDevice = getMakeSenseDevice(devices);
-
-  // connectDevice adds the .connection property
-  makesenseDevice = connectDevice(makesenseDevice, "MakeSense");
-
-  // On a disconnect
-  //
-  // if (!(connection === -1)){
-  //   chrome.hid.disconnect(connection, function() {});
-  //   connection = -1;
-  //   console.log("Disconnected with ID: "+connection);
-  //   enablePolling(false);
-  //   ui.makesenseDetected.innerHTML = "IO Board Disconnected";
-  //   enableIOControls(false);
-  // }
+  makesenseDevice = new MakeSense(devices);
+  makesenseDevice.prePollFrequency = 30
 
 };
 
@@ -57,18 +14,40 @@ var discoverDevices = function(devices) {
 var initializeApp = function(){
   chrome.hid.getDevices({}, discoverDevices);
 };
-//initializeApp();
+initializeApp();
+
+var lastValue = null;
+window.setInterval(function(){
+  if(makesenseDevice.analog_values[0] != lastValue){
+    lastValue = makesenseDevice.analog_values[0];
+    console.log(lastValue)
+  }
+},30);
+
+// On a disconnect
+//
+// if (!(connection === -1)){
+//   chrome.hid.disconnect(connection, function() {});
+//   connection = -1;
+//   console.log("Disconnected with ID: "+connection);
+//   enablePolling(false);
+//   ui.makesenseDetected.innerHTML = "IO Board Disconnected";
+//   enableIOControls(false);
+// }
 
 
+// Make a config window
+//
+// chrome.app.runtime.onLaunched.addListener(function() {
+//   chrome.app.window.create(
+//       "control-panel.html",
+//       {
+//         innerBounds: { width: 485, height: 310, minWidth: 485 }
+//       });
+// });
 
-chrome.app.runtime.onLaunched.addListener(function() {
-  chrome.app.window.create(
-      "control-panel.html",
-      {
-        innerBounds: { width: 485, height: 310, minWidth: 485 }
-      });
-});
-
-chrome.runtime.onConnectExternal.addListener(function(){
-
-});
+// Allow External connect
+//
+// chrome.runtime.onConnectExternal.addListener(function(){
+//
+// });

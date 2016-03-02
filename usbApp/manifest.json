@@ -5,7 +5,7 @@
   "minimum_chrome_version": "36.0.1941.0",
 	"app": {
 		"background": {
-			"scripts": [ "main.js" ]
+			"scripts": [ "makeSense.js", "main.js" ]
 		}
 	},
 	"icons": { "16": "codesters-16.png", "128": "codesters-128.png" },
