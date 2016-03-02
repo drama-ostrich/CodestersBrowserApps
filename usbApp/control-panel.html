@@ -1,0 +1,151 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <link rel="stylesheet" href="style.css">
+    <script src="control-panel.js"></script>
+  </head>
+  <body>
+    <div id="device-panel">
+	  <label id="makesense-detected">IO board Disconnected</label>
+    </div>
+
+    <div id="data-panel">
+      <input id="myCheck" checked="checked" type="checkbox">Loop
+    </div>
+
+
+    <div id="output-panel">
+      <h3>OUTPUT</h3>
+      <label>CHANNEL 0</label>
+      <select id="c0func">
+        <option value="di">Digital In</option>
+        <option value="do">Digital Out</option>
+        <option value="ai">Analog In</option>
+      </select>
+      <button id="c0ds">Set Digital Read</button>
+      <button id="c0dr">READ Digital</button>
+	  <label  id="c0dd"></label>
+      <button id="c0dh" style="display: none;">HIGH</button>
+      <button id="c0dl" style="display: none;">LOW</button>
+      <button id="c0ar" style="display: none;">Read Analog</button>
+      <label  id="c0aa" style="display: none;">0</label>
+      <input  id="c0ap" style="display: none;" type="text" value="0" size="4">
+      <button id="c0aw" style="display: none;">Write Analog</button>
+      <br>
+      <label>CHANNEL 1</label>
+      <select id="c1func">
+        <option value="di">Digital In</option>
+        <option value="do">Digital Out</option>
+        <option value="ai">Analog In</option>
+      </select>
+      <button id="c1ds">Set Digital Read</button>
+      <button id="c1dr">READ Digital</button>
+	  <label  id="c1dd"></label>
+      <button id="c1dh" style="display: none;">HIGH</button>
+      <button id="c1dl" style="display: none;">LOW</button>
+      <button id="c1ar" style="display: none;">Read Analog</button>
+      <label  id="c1aa" style="display: none;">0</label>
+      <input  id="c1ap" style="display: none;" type="text" value="0" size="4">
+      <button id="c1aw" style="display: none;">Write Analog</button>
+      <br>
+      <label>CHANNEL 2</label>
+      <select id="c2func">
+        <option value="di">Digital In</option>
+        <option value="do">Digital Out</option>
+        <option value="ai">Analog In</option>
+        <option value="ao">Analog Out</option>
+      </select>
+      <button id="c2ds">Set Digital Read</button>
+      <button id="c2dr">READ Digital</button>
+	  <label  id="c2dd"></label>
+      <button id="c2dh" style="display: none;">HIGH</button>
+      <button id="c2dl" style="display: none;">LOW</button>
+      <button id="c2ar" style="display: none;">Read Analog</button>
+      <label  id="c2aa" style="display: none;">0</label>
+      <input  id="c2ap" style="display: none;" type="range" min="0" max="255" value="0">
+      <button id="c2aw" style="display: none;">Write Analog</button>
+      <br>
+      <label>CHANNEL 3</label>
+      <select id="c3func">
+        <option value="di">Digital In</option>
+        <option value="do">Digital Out</option>
+        <option value="ai">Analog In</option>
+      </select>
+      <button id="c3ds">Set Digital Read</button>
+      <button id="c3dr">READ Digital</button>
+	  <label  id="c3dd"></label>
+      <button id="c3dh" style="display: none;">HIGH</button>
+      <button id="c3dl" style="display: none;">LOW</button>
+      <button id="c3ar" style="display: none;">Read Analog</button>
+      <label  id="c3aa" style="display: none;">0</label>
+      <input  id="c3ap" style="display: none;" type="text" value="0" size="4">
+      <button id="c3aw" style="display: none;">Write Analog</button>
+      <br>
+      <label>CHANNEL 4</label>
+      <select id="c4func">
+        <option value="di">Digital In</option>
+        <option value="do">Digital Out</option>
+        <option value="ai">Analog In</option>
+      </select>
+      <button id="c4ds">Set Digital Read</button>
+      <button id="c4dr">READ Digital</button>
+	  <label  id="c4dd"></label>
+      <button id="c4dh" style="display: none;">HIGH</button>
+      <button id="c4dl" style="display: none;">LOW</button>
+      <button id="c4ar" style="display: none;">Read Analog</button>
+      <label  id="c4aa" style="display: none;">0</label>
+      <input  id="c4ap" style="display: none;" type="text" value="0" size="4">
+      <button id="c4aw" style="display: none;">Write Analog</button>
+      <br>
+      <label>CHANNEL 5</label>
+      <select id="c5func">
+        <option value="di">Digital In</option>
+        <option value="do">Digital Out</option>
+        <option value="ai">Analog In</option>
+      </select>
+      <button id="c5ds">Set Digital Read</button>
+      <button id="c5dr">READ Digital</button>
+	  <label  id="c5dd"></label>
+      <button id="c5dh" style="display: none;">HIGH</button>
+      <button id="c5dl" style="display: none;">LOW</button>
+      <button id="c5ar" style="display: none;">Read Analog</button>
+      <label  id="c5aa" style="display: none;">0</label>
+      <input  id="c5ap" style="display: none;" type="text" value="0" size="4">
+      <button id="c5aw" style="display: none;">Write Analog</button>
+      <br>
+      <label>CHANNEL 6</label>
+      <select id="c6func">
+        <option value="di">Digital In</option>
+        <option value="do">Digital Out</option>
+        <option value="ai">Analog In</option>
+      </select>
+      <button id="c6ds">Set Digital Read</button>
+      <button id="c6dr">READ Digital</button>
+	  <label  id="c6dd"></label>
+      <button id="c6dh" style="display: none;">HIGH</button>
+      <button id="c6dl" style="display: none;">LOW</button>
+      <button id="c6ar" style="display: none;">Read Analog</button>
+      <label  id="c6aa" style="display: none;">0</label>
+      <input  id="c6ap" style="display: none;" type="text" value="0" size="4">
+      <button id="c6aw" style="display: none;">Write Analog</button>
+      <br>
+      <label>CHANNEL 7</label>
+      <select id="c7func">
+        <option value="di">Digital In</option>
+        <option value="do">Digital Out</option>
+        <option value="ai">Analog In</option>
+      </select>
+      <button id="c7ds">Set Digital Read</button>
+      <button id="c7dr">READ Digital</button>
+      <label  id="c7dd"></label>
+      <button id="c7dh" style="display: none;">HIGH</button>
+      <button id="c7dl" style="display: none;">LOW</button>
+      <button id="c7ar" style="display: none;">Read Analog</button>
+      <label  id="c7aa" style="display: none;">0</label>
+      <input  id="c7ap" style="display: none;" type="text" value="0" size="4">
+      <button id="c7aw" style="display: none;">Write Analog</button>
+      <br>
+    </div>
+
+  </body>
+</html>

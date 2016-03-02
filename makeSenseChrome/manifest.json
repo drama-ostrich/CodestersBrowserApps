@@ -1,7 +1,7 @@
 {
   "name": "Codesters MakeSense!",
   "description": "Allows MakeSense! device integration with Codesters.com projects",
-  "version": "0.1",
+  "version": "0.1.1",
   "manifest_version": 2,
   "app": {
     "background": {
@@ -15,7 +15,13 @@
     ]
   }],
   "externally_connectable": {
-    "matches": ["http://127.0.0.1:8887/bench.html"]
+    "matches": [
+      "http://127.0.0.1:8000/*",
+      "http://*.codesters.com/*",
+      "https://*.codesters.com/*",
+      "http://www.codesters.com/*",
+      "https://www.codesters.com/*"
+       ]
   }
 
 }

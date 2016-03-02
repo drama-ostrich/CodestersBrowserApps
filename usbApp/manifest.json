@@ -1,0 +1,20 @@
+{
+	"name": "CodestersUSB",
+	"manifest_version": 2,
+	"version": "0.1",
+  "minimum_chrome_version": "36.0.1941.0",
+	"app": {
+		"background": {
+			"scripts": [ "main.js" ]
+		}
+	},
+	"icons": { "16": "codesters-16.png", "128": "codesters-128.png" },
+	"permissions": [
+		"hid",
+		{
+			"usbDevices": [
+				{ "vendorId": 1240, "productId": 62570 }
+ 			]
+		}
+	]
+}
