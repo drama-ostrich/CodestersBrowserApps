@@ -1,3 +1,4 @@
+console.log('UI WINDOW');
 var updateUI = function(){}; // defined in closure
 
 (function() {
@@ -38,7 +39,22 @@ var updateUI = function(){}; // defined in closure
             channels[i].btn_a_read.addEventListener('click', channel_UI_analog_channel); // Read Analog Channel
             channels[i].btn_a_write.addEventListener('click', channel_UI_PWM_channel); // Write PWM channel
         }
+
+        var chromePort = chrome.runtime.connect('ohepjeofbhdaeepkpnhldhahophjpomd');
+        if (chromePort) {
+            console.log('Found Codesters MakeSense Chrome app, listening for data...');
+            chromePort.onMessage.addListener(portListener);
+        }
+        else{
+            console.log('Codesters MakeSense Chrome app not installed');
+        }
     };
+
+    var portListener = function(message){
+      if(message.update) {
+        updateUI(message.analog, message.digital);
+      }
+    }
 
     var channel_UI_change_function = function() {
         var id = Number(event.target.id.charAt(1));
@@ -112,12 +128,6 @@ var updateUI = function(){}; // defined in closure
       }
     };
 
-    // get update message from app
-    chrome.runtime.onMessage.addListener(function(message, sender, sendResponse) {
-        if(message.update) {
-          updateUI(message.analog, message.digital);
-        }
-    });
 
     window.addEventListener('load', initializeWindow);
 

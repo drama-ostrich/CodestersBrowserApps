@@ -1,4 +1,3 @@
-'use strict';
 var MakeSense = function(devices){
 
   this.device = null;
@@ -41,6 +40,7 @@ var MakeSense = function(devices){
   }
 
   if (this.device){
+    console.log('Found MakeSense Device. Connecting');
     this.connect();
   }
 
@@ -136,6 +136,12 @@ MakeSense.prototype.IO_digital_out = function(channel_id, hl) {
   bytes[2] = channel_id + "0".charCodeAt(0);
   chrome.hid.send(this.connection, id, bytes.buffer, function() {});
 };
+MakeSense.prototype.set_digitial_high = function(channel_id) {
+  this.IO_digital_out(channel_id, 'H');
+}
+MakeSense.prototype.set_digitial_low = function(channel_id) {
+  this.IO_digital_out(channel_id, 'L');
+}
 MakeSense.prototype.startPolling = function(){
   console.log('start polling');
   this.prePolling = true;
@@ -148,13 +154,15 @@ MakeSense.prototype.stopPolling = function(){
   this.polling = false;
 };
 MakeSense.prototype.prePoll = function(){
-  this.readAllD();
-  for (var i = 0; i < this.numberOfChannels; i ++){
-    this.IO_analog_send_read_request(i);
-  }
-  if(this.prePolling){
-    var callbackThis = this;
-    setTimeout(function(){callbackThis.prePoll();}, this.prePollFrequency);
+  if(this.connection){
+    this.readAllD();
+    for (var i = 0; i < this.numberOfChannels; i ++){
+      this.IO_analog_send_read_request(i);
+    }
+    if(this.prePolling){
+      var callbackThis = this;
+      setTimeout(function(){callbackThis.prePoll();}, this.prePollFrequency);
+    }
   }
 };
 MakeSense.prototype.poll = function(){
@@ -217,3 +225,14 @@ MakeSense.prototype.saveData = function(bytes) {
 
     }
 };
+MakeSense.prototype.disable = function() {
+  console.log('Disabling MakeSense device...');
+  var callbackThis = this;
+  this.stopPolling();
+  console.log('Stopping device polling');
+  chrome.hid.disconnect(this.connection, function(){
+    callbackThis.connection = null;
+    console.log('MakeSense disabled');
+  })
+
+}

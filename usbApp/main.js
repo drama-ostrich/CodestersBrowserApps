@@ -1,30 +1,69 @@
 // Codesters USB App
 // by Codesters
+
+console.log('APP WINDOW');
+
 var makesenseDevice;
+var externalPort;
+var internalPort;
+var messagingLooping = false;
+var messagingFrequency = 50;
 
 var discoverDevices = function(devices) {
   // This is called as a callback from chrome.hid.getDevices()
-
   makesenseDevice = new MakeSense(devices);
-  makesenseDevice.prePollFrequency = 30
-
+  startMessaging();
 };
 
-var initializeApp = function(){
-  chrome.hid.getDevices({}, discoverDevices);
+var disableDevices = function(){
+  stopMessaging();
+  makesenseDevice.disable();
+  //makesenseDevice = null;
 };
-initializeApp();
 
-
-
-var lastValue = null;
-window.setInterval(function(){
-  if(makesenseDevice && makesenseDevice.hasReceivedData){
+function startMessaging(){
+  messagingLooping = true;
+  messagingLoop();
+}
+function stopMessaging(){
+  messagingLooping = false;
+}
+function messagingLoop(){
+  if(makesenseDevice && makesenseDevice.connection && makesenseDevice.hasReceivedData){
     var analog_values = makesenseDevice.analog_values;
     var digital_values = makesenseDevice.digital_values;
-    chrome.runtime.sendMessage({update: true, analog: analog_values, digital: digital_values});
+    var message = {
+      update: true,
+      analog: analog_values,
+      digital: digital_values
+    }
+    if(externalPort){externalPort.postMessage(message);}
+    if(internalPort){internalPort.postMessage(message);}
+
   }
-},200);
+  if(messagingLooping){
+    window.setTimeout(messagingLoop, messagingFrequency);
+  }
+
+
+}
+
+chrome.runtime.onConnectExternal.addListener(function(port){
+  port.onDisconnect.addListener(disableDevices);
+  externalPort = port;
+  chrome.hid.getDevices({}, discoverDevices);
+});
+
+chrome.runtime.onConnect.addListener(function(port){
+  port.onDisconnect.addListener(disableDevices);
+  internalPort = port;
+  chrome.hid.getDevices({}, discoverDevices);
+});
+
+
+
+
+
 
 // On a disconnect
 //
