@@ -11,6 +11,9 @@ var MakeSense = function(devices){
   this.prePollFrequency = 30;
   this.pollFrequency = 0;
 
+  this.hasReceivedData = false;
+  this.hasConnected = false;
+
   this.digital_values = [];
   for (var i=0; i < this.numberOfChannels; i++){
     this.digital_values.push(null);
@@ -70,6 +73,7 @@ MakeSense.prototype.connect = function(){
           } else {
               var connection = connectInfo.connectionId;
               callbackThis.connection = connection;
+              callbackThis.hasConnected = true;
               console.log("Connected to " + callbackThis.name + " with ID: " + connection);
               console.log(connection);
               callbackThis.startPolling();
@@ -157,6 +161,7 @@ MakeSense.prototype.poll = function(){
   if(this.connection){
     var callbackThis = this;
     chrome.hid.receive(this.connection, function(reportId, data) {
+        callbackThis.hasReceivedData = true;
         if (reportId == 3) { //only handle data for debug interface
             callbackThis.saveData(new Uint8Array(data));
         }

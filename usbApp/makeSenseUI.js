@@ -1,20 +1,12 @@
+var updateUI = function(){}; // defined in closure
+
 (function() {
-    var ui = {
-        makesenseDetected: null,
-    };
-
+    var ui = {};
     var channels = [];
-
-    var connection = -1;
-    var deviceMap = {};
-    var pendingDeviceMap = {};
-    var makesenseDevice = null;
-    var pendingDeviceEnumerations = 0;
-    var keepPolling = false;
-
     var loop = document.getElementById("myCheck");
 
     var initializeWindow = function() {
+      console.log('Initializing MakeSense UI.')
         for (var k in ui) {
             var id = k.replace(/([A-Z])/, '-$1').toLowerCase();
             var element = document.getElementById(id);
@@ -23,7 +15,7 @@
             }
             ui[k] = element;
         }
-        console.log("Initilize...");
+
         for (var i = 0; i < 8; ++i) {
             channels[i] = {
                 id: i,
@@ -46,7 +38,6 @@
             channels[i].btn_a_read.addEventListener('click', channel_UI_analog_channel); // Read Analog Channel
             channels[i].btn_a_write.addEventListener('click', channel_UI_PWM_channel); // Write PWM channel
         }
-
     };
 
     var channel_UI_change_function = function() {
@@ -114,10 +105,20 @@
         IO_analog_set_PWM(channel_id, value_str);
     };
 
+    updateUI = function(analog, digital){
+      for (var i = 0; i < 8; i++) {
+          channels[i].lbl_d_read.innerHTML = digital[i];
+          channels[i].lbl_a_read.innerHTML = analog[i];
+      }
+    };
 
-
-
-
+    // get update message from app
+    chrome.runtime.onMessage.addListener(function(message, sender, sendResponse) {
+        if(message.update) {
+          updateUI(message.analog, message.digital);
+        }
+    });
 
     window.addEventListener('load', initializeWindow);
+
 }());

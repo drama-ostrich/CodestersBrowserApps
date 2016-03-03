@@ -10,19 +10,21 @@ var discoverDevices = function(devices) {
 
 };
 
-
 var initializeApp = function(){
   chrome.hid.getDevices({}, discoverDevices);
 };
 initializeApp();
 
+
+
 var lastValue = null;
 window.setInterval(function(){
-  if(makesenseDevice.analog_values[0] != lastValue){
-    lastValue = makesenseDevice.analog_values[0];
-    console.log(lastValue)
+  if(makesenseDevice && makesenseDevice.hasReceivedData){
+    var analog_values = makesenseDevice.analog_values;
+    var digital_values = makesenseDevice.digital_values;
+    chrome.runtime.sendMessage({update: true, analog: analog_values, digital: digital_values});
   }
-},30);
+},200);
 
 // On a disconnect
 //
@@ -37,14 +39,13 @@ window.setInterval(function(){
 
 
 // Make a config window
-//
-// chrome.app.runtime.onLaunched.addListener(function() {
-//   chrome.app.window.create(
-//       "control-panel.html",
-//       {
-//         innerBounds: { width: 485, height: 310, minWidth: 485 }
-//       });
-// });
+chrome.app.runtime.onLaunched.addListener(function() {
+  chrome.app.window.create(
+      "control-panel.html",
+      {
+        innerBounds: { width: 485, height: 310, minWidth: 485 }
+      });
+});
 
 // Allow External connect
 //
