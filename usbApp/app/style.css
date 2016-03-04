@@ -1,0 +1,21 @@
+body {
+  font-family: monospace;
+  font-size: 12pt;
+  background: white;
+  padding:20px;
+}
+
+section {
+  border: solid #888 1px;
+  margin: 5px;
+  padding:5px;
+  display:block;
+}
+.channel{
+  margin-top:20px;
+}
+#device-panel {
+}
+
+#output-panel {
+}

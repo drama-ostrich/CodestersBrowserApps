@@ -1,0 +1,33 @@
+<label>CHANNEL {{id}}</label>
+
+<select>
+  <option value="di">Digital In</option>
+  <option value="do">Digital Out</option>
+  <option value="ai">Analog In</option>
+  <option value="ao">Analog Out</option>
+</select>
+
+{{#if mode_digital_out}}
+  <div class='do'>
+    <button class='set-high'>Set High</button>
+    <button class='set-high'>Set Low</button>
+  </div>
+{{/if}}
+
+{{#if mode_digital_in}}
+  <div class='di'>
+    <span class='number-value'></span>
+  </div>
+{{/if}}
+
+{{#if mode_analog_out}}
+  <div class='ao'>
+    <input type="range"  min="0" max="255" />
+  </div>
+{{/if}}
+
+{{#if mode_analog_in}}
+  <div class='ai'>
+    <span class='number-value'></span>
+  </div>
+{{/if}}

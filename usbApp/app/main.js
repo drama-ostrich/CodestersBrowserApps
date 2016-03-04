@@ -82,7 +82,7 @@ chrome.app.runtime.onLaunched.addListener(function() {
   chrome.app.window.create(
       "control-panel.html",
       {
-        innerBounds: { width: 485, height: 310, minWidth: 485 }
+        innerBounds: { width: 600, height: 480}
       });
 });
 
