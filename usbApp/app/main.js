@@ -7,7 +7,7 @@ var makesenseDevice;
 var externalPort;
 var internalPort;
 var messagingLooping = false;
-var messagingFrequency = 50;
+var messagingFrequency = 100;
 
 var discoverDevices = function(devices) {
   // This is called as a callback from chrome.hid.getDevices()
@@ -49,12 +49,14 @@ function messagingLoop(){
 }
 
 chrome.runtime.onConnectExternal.addListener(function(port){
+  console.log('connect external');
   port.onDisconnect.addListener(disableDevices);
   externalPort = port;
   chrome.hid.getDevices({}, discoverDevices);
 });
 
 chrome.runtime.onConnect.addListener(function(port){
+  console.log('connect');
   port.onDisconnect.addListener(disableDevices);
   internalPort = port;
   chrome.hid.getDevices({}, discoverDevices);

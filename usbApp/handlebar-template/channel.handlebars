@@ -3,12 +3,13 @@
 <select>
   <option value="di">Digital In</option>
   <option value="do">Digital Out</option>
-  <option value="ai">Analog In</option>
+  <option selected="selected" value="ai">Analog In</option>
   <option value="ao">Analog Out</option>
 </select>
 
 {{#if mode_digital_out}}
   <div class='do'>
+    <span>Digital Out: </span>
     <button class='set-high'>Set High</button>
     <button class='set-high'>Set Low</button>
   </div>
@@ -16,18 +17,21 @@
 
 {{#if mode_digital_in}}
   <div class='di'>
-    <span class='number-value'></span>
+    <span>Digital In: </span>
+    <span id="digitial-in-{{id}}" class='number-value'>{{digital_value}}</span>
   </div>
 {{/if}}
 
 {{#if mode_analog_out}}
   <div class='ao'>
+    <span>Analog Out: </span>
     <input type="range"  min="0" max="255" />
   </div>
 {{/if}}
 
 {{#if mode_analog_in}}
   <div class='ai'>
-    <span class='number-value'></span>
+    <span>Analog In: </span>
+    <span id="analog-in-{{id}}" class='number-value'>{{analog_value}}</span>
   </div>
 {{/if}}

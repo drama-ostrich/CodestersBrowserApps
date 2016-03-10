@@ -15,108 +15,79 @@ $(function(){
     this.analog_value = 0;
     this.digital_value = 0;
 
-    this.container = document.getElementById('channel0');
+    this.container = document.getElementById('channel' + id.toString());
+    this.analog_container = null;
+    this.digital_container = null;
+
+  };
+  MakeSenseUIModel.prototype.connect = function(){
+    // save elements to this model that will hold output
+
+    this.digital_container = null;
+    if(this.mode_digital_in){
+      this.digital_container = document.getElementById('digital-in-' + this.id.toString());
+    }
+
+    this.analog_container = null;
+    if(this.mode_analog_in){
+      this.analog_container = document.getElementById('analog-in-' + this.id.toString());
+    }
+  }
+  MakeSenseUIModel.prototype.render = function(){
+    // render the html for this channel
+    var html = channel_template(this);
+    this.container.innerHTML = html;
+    this.connect();
 
   };
   MakeSenseUIModel.prototype.update = function(){
-    var html = channel_template(this);
-    this.container.innerHTML = html;
+    // update just the displaty numbers in each channel
+    if(this.mode_analog_in && this.analog_container){
+      this.analog_container.innerHTML = this.analog_value;
+    }
+    if(this.mode_digital_in && this.digital_container){
+        this.digital_container.innerHTML = this.digital_value;
+    }
   };
-
-  for(var i=0; i < 8; i++){
-    var channel = new MakeSenseUIModel(i);
-    channel.update();
-    channel_models.push(channel);
-
-  }
-
-
-
-  var ui = {};
-  var channels = [];
-  var loop = document.getElementById("myCheck");
-
-  var initializeWindow = function() {
-    console.log('Initializing MakeSense UI.')
-
-    $('#channels').append()
-
-      for (var i = 0; i < 8; ++i) {
-          channels[i] = {
-              id: i,
-              select_func: document.getElementById("c" + i + "func"),
-              btn_d_set_read: document.getElementById("c" + i + "ds"),
-              btn_d_read: document.getElementById("c" + i + "dr"),
-              lbl_d_read: document.getElementById("c" + i + "dd"),
-              btn_d_high: document.getElementById("c" + i + "dh"),
-              btn_d_low: document.getElementById("c" + i + "dl"),
-              btn_a_read: document.getElementById("c" + i + "ar"),
-              lbl_a_read: document.getElementById("c" + i + "aa"),
-              btn_a_write: document.getElementById("c" + i + "aw"),
-              txb_a_write: document.getElementById("c" + i + "ap"),
-          }
-          channels[i].select_func.addEventListener('change', channel_UI_change_function);
-          channels[i].btn_d_high.addEventListener('click', channel_UI_digital_out); // Set Digital HIGH
-          channels[i].btn_d_low.addEventListener('click', channel_UI_digital_out); // Set Digital LOW
-          channels[i].btn_d_set_read.addEventListener('click', channel_UI_set_read); // Set Digital READ MODE
-          channels[i].btn_d_read.addEventListener('click', channel_UI_read_channel); // Read Digital VALUE
-          channels[i].btn_a_read.addEventListener('click', channel_UI_analog_channel); // Read Analog Channel
-          channels[i].btn_a_write.addEventListener('click', channel_UI_PWM_channel); // Write PWM channel
-      }
-
-      var chromePort = chrome.runtime.connect('ohepjeofbhdaeepkpnhldhahophjpomd');
-      if (chromePort) {
-          console.log('Found Codesters MakeSense Chrome app, listening for data...');
-          chromePort.onMessage.addListener(portListener);
-      }
-      else{
-          console.log('Codesters MakeSense Chrome app not installed');
-      }
-  };
-
 
   var portListener = function(message){
     if(message.update) {
-      updateUI(message.analog, message.digital);
+      for(var i=0; i < 8; i++){
+        channel_models[i].analog_value = message.analog[i];
+        channel_models[i].digital_value = message.digital[i];
+        channel_models[i].update();
+      }
     }
   }
 
-  var channel_UI_change_function = function() {
-      var id = Number(event.target.id.charAt(1));
-      var channel_obj = channels[id];
-      var select_value = channel_obj.select_func.value;
-      if (select_value == "di") { // Digital IN
-          channel_obj.btn_d_set_read.style.display = 'inline';
-          channel_obj.btn_d_read.style.display = 'inline';
-          channel_obj.lbl_d_read.style.display = 'inline';
-      } else {
-          channel_obj.btn_d_set_read.style.display = 'none';
-          channel_obj.btn_d_read.style.display = 'none';
-          channel_obj.lbl_d_read.style.display = 'none';
-      }
-      if (select_value == "do") { // Digital OUT
-          channel_obj.btn_d_high.style.display = 'inline';
-          channel_obj.btn_d_low.style.display = 'inline';
-      } else {
-          channel_obj.btn_d_high.style.display = 'none';
-          channel_obj.btn_d_low.style.display = 'none';
-      }
-      if (select_value == "ai") { // Analog IN
-          channel_obj.btn_a_read.style.display = 'inline';
-          channel_obj.lbl_a_read.style.display = 'inline';
-      } else {
-          channel_obj.btn_a_read.style.display = 'none';
-          channel_obj.lbl_a_read.style.display = 'none';
-      }
-      if (select_value == "ao") { //Analog OUT
-          channel_obj.btn_a_write.style.display = 'inline';
-          channel_obj.txb_a_write.style.display = 'inline';
-      } else {
-          channel_obj.btn_a_write.style.display = 'none';
-          channel_obj.txb_a_write.style.display = 'none';
-      }
+  var connectToApp = function(){
+    var chromePort = chrome.runtime.connect('dehcajfkhngfjckmkjckfmcmbgpmbkmo');
+    if (chromePort) {
+        console.log('Found Codesters MakeSense Chrome app, listening for data...');
+        chromePort.onMessage.addListener(portListener);
+    }
+    else{
+        console.log('Codesters MakeSense Chrome app not installed');
+    }
+  };
+
+  var initializeWindow = function() {
+    console.log('Initializing MakeSense UI.');
+
+    for(var i=0; i < 8; i++){
+      var channel = new MakeSenseUIModel(i);
+      channel.render();
+      channel_models.push(channel);
+
+    }
+
 
   };
+
+
+
+
+
 
   var channel_UI_digital_out = function() {
       var channel_id = Number(event.target.id.charAt(1));
@@ -146,15 +117,7 @@ $(function(){
       IO_analog_set_PWM(channel_id, value_str);
   };
 
-  updateUI = function(analog, digital){
-    for (var i = 0; i < 8; i++) {
-        channels[i].lbl_d_read.innerHTML = digital[i];
-        channels[i].lbl_a_read.innerHTML = analog[i];
-    }
-  };
-
-
-
-  //initializeWindow();
+  initializeWindow();
+  connectToApp();
 
 });
