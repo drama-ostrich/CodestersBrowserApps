@@ -19,9 +19,37 @@ $(function(){
     this.analog_container = null;
     this.digital_container = null;
 
+    this.UISelect = null;
+
   };
+  MakeSenseUIModel.prototype.changeMode = function(selectElement){
+    // changeMode is called from a eventListener on a select
+    // so "this" is the select element for a channel
+    var selectedMode = selectElement.value;
+    this.mode_digital_out = false;
+    this.mode_digital_in = false;
+    this.mode_analog_out = false;
+    this.mode_analog_in = false;
+    switch (selectedMode) {
+      case 'ai':
+        this.mode_analog_in = true; break;
+      case 'ao':
+        this.mode_analog_out = true; break;
+      case 'di':
+          this.mode_digital_in = true; break;
+      case 'do':
+          this.mode_digital_out = true; break;
+      default:
+        this.mode_analog_in = true;
+    }
+
+    this.render();
+  }
   MakeSenseUIModel.prototype.connect = function(){
     // save elements to this model that will hold output
+    var callbackThis = this;
+    this.UISelect = document.getElementById('select-mode-' + this.id.toString());
+    this.UISelect.addEventListener('change', function(){callbackThis.changeMode(this);}, false);
 
     this.digital_container = null;
     if(this.mode_digital_in){
@@ -78,16 +106,12 @@ $(function(){
       var channel = new MakeSenseUIModel(i);
       channel.render();
       channel_models.push(channel);
-
     }
-
 
   };
 
 
-
-
-
+  // copied from old app
 
   var channel_UI_digital_out = function() {
       var channel_id = Number(event.target.id.charAt(1));
