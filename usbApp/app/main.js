@@ -12,7 +12,12 @@ var messagingFrequency = 100;
 var discoverDevices = function(devices) {
   // This is called as a callback from chrome.hid.getDevices()
   makesenseDevice = new MakeSense(devices);
-  startMessaging();
+
+   // only send messege if
+  // 1. There is not a message in the queue already
+  // 2. there is a changed value
+  // so we don't need to start the messaging loop
+  //startMessaging();
 };
 
 var disableDevices = function(){
@@ -21,6 +26,7 @@ var disableDevices = function(){
   //makesenseDevice = null;
 };
 
+var messageInQueue = false;
 function startMessaging(){
   messagingLooping = true;
   messagingLoop();
@@ -29,6 +35,7 @@ function stopMessaging(){
   messagingLooping = false;
 }
 function messagingLoop(){
+  console.log('messageLoop');
   if(makesenseDevice && makesenseDevice.connection && makesenseDevice.hasReceivedData){
     var analog_values = makesenseDevice.analog_values;
     var digital_values = makesenseDevice.digital_values;
@@ -39,7 +46,7 @@ function messagingLoop(){
     }
     if(externalPort){externalPort.postMessage(message);}
     if(internalPort){internalPort.postMessage(message);}
-
+    messageInQueue = false;
   }
   if(messagingLooping){
     window.setTimeout(messagingLoop, messagingFrequency);
@@ -62,7 +69,17 @@ chrome.runtime.onConnect.addListener(function(port){
   chrome.hid.getDevices({}, discoverDevices);
 });
 
-
+chrome.runtime.onMessageExternal.addListener(function(request, sender, sendResponse) {
+  console.log('onMessageExternal');
+    if (request) {
+        if (request.message) {
+            if (request.message == "version") {
+                sendResponse({version: 0.1});
+            }
+        }
+    }
+    return true;
+});
 
 
 

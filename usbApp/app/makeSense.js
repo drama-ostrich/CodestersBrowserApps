@@ -7,7 +7,7 @@ var MakeSense = function(devices){
   this.prePolling = false;
   this.numberOfChannels = 8;
 
-  this.prePollFrequency = 30;
+  this.prePollFrequency = 100;
   this.pollFrequency = 0;
 
   this.hasReceivedData = false;
@@ -195,6 +195,12 @@ MakeSense.prototype.byteHexToInt = function(value) {
         return null;
     }
 }
+MakeSense.prototype.sendMessage = function(bytes) {
+  if (!messageInQueue){
+    messageInQueue = true;
+    window.setTimeout(messagingLoop, 5);
+  }
+}
 MakeSense.prototype.saveData = function(bytes) {
     if (bytes.length == 15 && bytes[0] == "I".charCodeAt(0) && bytes[1] == "R".charCodeAt(0)) {
         var return_val = this.byteHexToInt(bytes[3]);
@@ -204,13 +210,23 @@ MakeSense.prototype.saveData = function(bytes) {
             if (return_val != null) {
                 read_value = return_val * 16 + read_value;
                 for (var i = 0; i < 8; i++) {
-                    this.digital_values[i] = ((read_value & (1 << i)) != 0) ? "HIGH" : "low";
+                    var newValue = ((read_value & (1 << i)) != 0) ? "HIGH" : "low";
+                    if(newValue != this.digital_values[i]){
+                      this.digital_values[i] = newValue;
+                      this.sendMessage();
+                    }
+
                 }
             }
         } else if (bytes[3] == 72 || bytes[3] == 76) {
             var return_val = this.byteHexToInt(bytes[2]);
             if (return_val != null && return_val >= 0 && return_val < 8) {
-                this.digital_values[return_val] = (bytes[3] == 72) ? "HIGH" : "low";
+                var newValue = (bytes[3] == 72) ? "HIGH" : "low";
+                if(newValue != this.digital_values[return_val]){
+                  this.digital_values[return_val] = newValue
+                  this.sendMessage();
+                }
+
             }
         }
     } else if (bytes.length == 15 && bytes[0] == "I".charCodeAt(0) && bytes[1] == "I".charCodeAt(0)) {
@@ -219,7 +235,12 @@ MakeSense.prototype.saveData = function(bytes) {
         var return_val3 = this.byteHexToInt(bytes[4]);
         if (return_val1 !== null & return_val2 !== null & return_val3 !== null) {
             if (return_val1 < 8) {
-              this.analog_values[return_val1] = return_val2 * 16 + return_val3;
+              var newValue = return_val2 * 16 + return_val3;
+              if (newValue != this.analog_values[return_val1]){
+                this.analog_values[return_val1] = newValue;
+                this.sendMessage();
+              }
+
             }
         }
 
