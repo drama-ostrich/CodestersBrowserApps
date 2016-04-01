@@ -80,7 +80,19 @@ chrome.runtime.onMessageExternal.addListener(function(request, sender, sendRespo
     return true;
 });
 
-
+chrome.runtime.onMessage.addListener(function(request, sender, sendResponse) {
+  console.log('onMessage');
+    if (request) {
+      console.log(request);
+      //channel: channel, value: highOrLow
+      if(request.channel){
+        console.log(request.channel.toString() + ': ' + request.value);
+        if (request.value == 'HIGH'){makesenseDevice.set_digitial_high(request.channel);}
+        if (request.value == 'LOW'){makesenseDevice.set_digitial_low(request.channel);}
+      }
+    }
+    return true;
+});
 
 
 // On a disconnect

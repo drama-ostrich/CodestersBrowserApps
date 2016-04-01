@@ -3,6 +3,7 @@ var updateUI = function(){}; // defined in closure
 var MakeSenseUIModel;
 var channel_template = Handlebars.templates['channel'];
 var channel_models = [];
+codestersUSBAppID = chrome.runtime.id;//'dehcajfkhngfjckmkjckfmcmbgpmbkmo';
 $(function(){
 
   MakeSenseUIModel = function(id){
@@ -71,8 +72,8 @@ $(function(){
     if(this.mode_digital_out){
       this.digital_set_high_btn = $('#set-high-' + this.id.toString());
       this.digital_set_low_btn = $('#set-low-' + this.id.toString());
-      $(this.digital_set_high_btn).click(function(){console.log("Clicked High")});
-      $(this.digital_set_low_btn).click(function(){console.log("Clicked Low")});
+      $(this.digital_set_high_btn).click(function(){callbackThis.messageDigitalOut(callbackThis.id, 'HIGH')});
+      $(this.digital_set_low_btn).click(function(){callbackThis.messageDigitalOut(callbackThis.id, 'LOW')});
     }
   }
   MakeSenseUIModel.prototype.render = function(){
@@ -90,6 +91,16 @@ $(function(){
     if(this.mode_digital_in && this.digital_container){
         this.digital_container.innerHTML = this.digital_value;
     }
+  };
+  MakeSenseUIModel.prototype.messageDigitalOut = function(channel, highOrLow){
+    chrome.runtime.sendMessage(codestersUSBAppID, { channel: channel, value: highOrLow },
+      function (reply) {
+        if (reply && reply.version) {
+            codestersUSBAppInstalled = true;
+            if (makeSenseToolkit){makeSenseToolkit.show();}
+            console.log(reply);
+        }
+    });
   };
 
   var portListener = function(message){
