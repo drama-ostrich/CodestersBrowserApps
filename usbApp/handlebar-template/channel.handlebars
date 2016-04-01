@@ -1,31 +1,16 @@
 <label>CHANNEL {{id}}</label>
 
 <select id="select-mode-{{id}}">
-  <option value="di">Digital In</option>
-  <option value="do">Digital Out</option>
-  <option value="ai" selected="selected">Analog In</option>
-  <option value="ao">Analog Out</option>
+  <option value="di" {{#if mode_digital_in}}selected="selected"{{/if}} >Digital In</option>
+  <option value="ai" {{#if mode_analog_in}}selected="selected"{{/if}} >Analog In</option>
+  <option value="do" {{#if mode_digital_out}}selected="selected"{{/if}} >Digital Out</option>
+  <option value="ao" {{#if mode_analog_out}}selected="selected"{{/if}} >Analog Out</option>
 </select>
-
-{{#if mode_digital_out}}
-  <div class='do'>
-    <span>Digital Out: </span>
-    <button class='set-high'>Set High</button>
-    <button class='set-high'>Set Low</button>
-  </div>
-{{/if}}
 
 {{#if mode_digital_in}}
   <div class='di'>
     <span>Digital In: </span>
-    <span id="digitial-in-{{id}}" class='number-value'>{{digital_value}}</span>
-  </div>
-{{/if}}
-
-{{#if mode_analog_out}}
-  <div class='ao'>
-    <span>Analog Out: </span>
-    <input type="range"  min="0" max="255" />
+    <span id="digital-in-{{id}}" class='number-value'>{{digital_value}}</span>
   </div>
 {{/if}}
 
@@ -33,5 +18,20 @@
   <div class='ai'>
     <span>Analog In: </span>
     <span id="analog-in-{{id}}" class='number-value'>{{analog_value}}</span>
+  </div>
+{{/if}}
+
+{{#if mode_digital_out}}
+  <div class='do'>
+    <span>Digital Out: </span>
+    <button id='set-high-{{id}}'>Set High</button>
+    <button id='set-low-{{id}}'>Set Low</button>
+  </div>
+{{/if}}
+
+{{#if mode_analog_out}}
+  <div class='ao'>
+    <span>Analog Out: </span>
+    <input type="range"  min="0" max="255" />
   </div>
 {{/if}}

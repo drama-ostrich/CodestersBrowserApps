@@ -13,6 +13,10 @@ var MakeSense = function(devices){
   this.hasReceivedData = false;
   this.hasConnected = false;
 
+  // empty channels sometimes give a value between 0 and 7 due to noise
+  // assume all values less than noiseFloor are 0
+  this.noiseFloor = 8;
+
   this.digital_values = [];
   for (var i=0; i < this.numberOfChannels; i++){
     this.digital_values.push(null);
@@ -196,9 +200,11 @@ MakeSense.prototype.byteHexToInt = function(value) {
     }
 }
 MakeSense.prototype.sendMessage = function(bytes) {
+  // messageInQueue is defined in main.js
+  // and is set to false in main.js
   if (!messageInQueue){
     messageInQueue = true;
-    window.setTimeout(messagingLoop, 5);
+    window.setTimeout(messagingLoop, 1);
   }
 }
 MakeSense.prototype.saveData = function(bytes) {
@@ -237,8 +243,19 @@ MakeSense.prototype.saveData = function(bytes) {
             if (return_val1 < 8) {
               var newValue = return_val2 * 16 + return_val3;
               if (newValue != this.analog_values[return_val1]){
-                this.analog_values[return_val1] = newValue;
-                this.sendMessage();
+
+                //console.log('difference on channel: ' + return_val1 + ' - ' + this.analog_values[return_val1] + ' - ' + newValue);
+
+                // if both the old value and new value are below the noise floor, ignore it.
+                if(
+                  this.analog_values[return_val1] == null ||
+                  (this.analog_values[return_val1] > this.noiseFloor && newValue < this.noiseFloor) ||
+                  newValue > this.noiseFloor
+                ){
+                  this.analog_values[return_val1] = newValue;
+                  this.sendMessage();
+                }
+
               }
 
             }

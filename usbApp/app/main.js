@@ -35,7 +35,6 @@ function stopMessaging(){
   messagingLooping = false;
 }
 function messagingLoop(){
-  console.log('messageLoop');
   if(makesenseDevice && makesenseDevice.connection && makesenseDevice.hasReceivedData){
     var analog_values = makesenseDevice.analog_values;
     var digital_values = makesenseDevice.digital_values;

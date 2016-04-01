@@ -15,7 +15,7 @@ $(function(){
     this.analog_value = 0;
     this.digital_value = 0;
 
-    this.container = document.getElementById('channel' + id.toString());
+    this.container = $('#channel' + id.toString());
     this.analog_container = null;
     this.digital_container = null;
 
@@ -48,23 +48,37 @@ $(function(){
   MakeSenseUIModel.prototype.connect = function(){
     // save elements to this model that will hold output
     var callbackThis = this;
-    this.UISelect = document.getElementById('select-mode-' + this.id.toString());
-    this.UISelect.addEventListener('change', function(){callbackThis.changeMode(this);}, false);
+    this.UISelect = $('#select-mode-' + this.id.toString());
+    this.UISelect.change(function(){callbackThis.changeMode(this);});
 
+    // digital in UI
     this.digital_container = null;
     if(this.mode_digital_in){
+      // We're just setting innerHTML, so no need for jQuery
       this.digital_container = document.getElementById('digital-in-' + this.id.toString());
     }
 
+    // analog in UI
     this.analog_container = null;
     if(this.mode_analog_in){
+      // We're just setting innerHTML, so no need for jQuery
       this.analog_container = document.getElementById('analog-in-' + this.id.toString());
+    }
+
+    // digital out UI
+    this.digital_set_high_btn = null;
+    this.digital_set_low_btn = null;
+    if(this.mode_digital_out){
+      this.digital_set_high_btn = $('#set-high-' + this.id.toString());
+      this.digital_set_low_btn = $('#set-low-' + this.id.toString());
+      $(this.digital_set_high_btn).click(function(){console.log("Clicked High")});
+      $(this.digital_set_low_btn).click(function(){console.log("Clicked Low")});
     }
   }
   MakeSenseUIModel.prototype.render = function(){
     // render the html for this channel
     var html = channel_template(this);
-    this.container.innerHTML = html;
+    this.container.html(html);
     this.connect();
 
   };

@@ -3,6 +3,8 @@ body {
   font-size: 12pt;
   background: white;
   padding:20px;
+  height: 430px;
+  overflow: scroll;
 }
 
 section {
