@@ -72,8 +72,10 @@ $(function(){
     if(this.mode_digital_out){
       this.digital_set_high_btn = $('#set-high-' + this.id.toString());
       this.digital_set_low_btn = $('#set-low-' + this.id.toString());
-      $(this.digital_set_high_btn).click(function(){callbackThis.messageDigitalOut(callbackThis.id, 'HIGH')});
-      $(this.digital_set_low_btn).click(function(){callbackThis.messageDigitalOut(callbackThis.id, 'LOW')});
+      this.digital_set_high_quick_btn = $('#set-quick-' + this.id.toString());
+      $(this.digital_set_high_btn).click(function(){callbackThis.messageDigitalOut(callbackThis.id, 'HIGH', false)});
+      $(this.digital_set_low_btn).click(function(){callbackThis.messageDigitalOut(callbackThis.id, 'LOW', false)});
+      $(this.digital_set_high_quick_btn).click(function(){callbackThis.messageDigitalOut(callbackThis.id, 'HIGH', true)});
     }
   }
   MakeSenseUIModel.prototype.render = function(){
@@ -92,8 +94,8 @@ $(function(){
         this.digital_container.innerHTML = this.digital_value;
     }
   };
-  MakeSenseUIModel.prototype.messageDigitalOut = function(channel, highOrLow){
-    chrome.runtime.sendMessage(codestersUSBAppID, { channel: channel, value: highOrLow },
+  MakeSenseUIModel.prototype.messageDigitalOut = function(channel, highOrLow, quickOutput){
+    chrome.runtime.sendMessage(codestersUSBAppID, { channel: channel, value: highOrLow, quick: quickOutput },
       function (reply) {
         if (reply && reply.version) {
             codestersUSBAppInstalled = true;

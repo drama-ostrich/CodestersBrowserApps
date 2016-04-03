@@ -27,6 +27,11 @@ var MakeSense = function(devices){
     this.analog_values.push(null);
   }
 
+  this.output_channels = [];
+  for (var i=0; i < this.numberOfChannels; i++){
+    this.output_channels.push(false);
+  }
+
   // if devices is an array of devices
   if(devices.length){
     this.device = this.getFromDevices(devices);
@@ -132,7 +137,13 @@ MakeSense.prototype.IO_digital_set_to_read = function(channel_id) {
   bytes[2] = channel_id + "0".charCodeAt(0);
   chrome.hid.send(this.connection, id, bytes.buffer, function() {});
 };
-MakeSense.prototype.IO_digital_out = function(channel_id, hl) {
+MakeSense.prototype.IO_digital_out = function(channel_id, hl, quickOutput) {
+  if(!quickOutput){
+    this.output_channels[channel_id] = true;
+  }
+  else{
+    this.output_channels[channel_id] = false;
+  }
   var id = 3
   var bytes = new Uint8Array(15);
   bytes[0] = "I".charCodeAt(0);
@@ -140,11 +151,11 @@ MakeSense.prototype.IO_digital_out = function(channel_id, hl) {
   bytes[2] = channel_id + "0".charCodeAt(0);
   chrome.hid.send(this.connection, id, bytes.buffer, function() {});
 };
-MakeSense.prototype.set_digitial_high = function(channel_id) {
-  this.IO_digital_out(channel_id, 'H');
+MakeSense.prototype.set_digitial_high = function(channel_id, quickOutput) {
+  this.IO_digital_out(channel_id, 'H', quickOutput);
 }
-MakeSense.prototype.set_digitial_low = function(channel_id) {
-  this.IO_digital_out(channel_id, 'L');
+MakeSense.prototype.set_digitial_low = function(channel_id, quickOutput) {
+  this.IO_digital_out(channel_id, 'L', quickOutput);
 }
 MakeSense.prototype.startPolling = function(){
   console.log('start polling');
@@ -161,7 +172,10 @@ MakeSense.prototype.prePoll = function(){
   if(this.connection){
     this.readAllD();
     for (var i = 0; i < this.numberOfChannels; i ++){
-      this.IO_analog_send_read_request(i);
+      if(!this.output_channels[i]){
+        this.IO_analog_send_read_request(i);
+      }
+
     }
     if(this.prePolling){
       var callbackThis = this;

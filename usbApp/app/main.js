@@ -87,8 +87,10 @@ chrome.runtime.onMessage.addListener(function(request, sender, sendResponse) {
       //channel: channel, value: highOrLow
       if(request.channel){
         console.log(request.channel.toString() + ': ' + request.value);
-        if (request.value == 'HIGH'){makesenseDevice.set_digitial_high(request.channel);}
-        if (request.value == 'LOW'){makesenseDevice.set_digitial_low(request.channel);}
+        var quickOutput = false;
+        if(request.quick){quickOutput = true;}
+        if (request.value == 'HIGH'){makesenseDevice.set_digitial_high(request.channel, quickOutput);}
+        if (request.value == 'LOW'){makesenseDevice.set_digitial_low(request.channel, quickOutput);}
       }
     }
     return true;

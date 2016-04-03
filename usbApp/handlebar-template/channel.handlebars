@@ -4,7 +4,7 @@
   <option value="di" {{#if mode_digital_in}}selected="selected"{{/if}} >Digital In</option>
   <option value="ai" {{#if mode_analog_in}}selected="selected"{{/if}} >Analog In</option>
   <option value="do" {{#if mode_digital_out}}selected="selected"{{/if}} >Digital Out</option>
-  <option value="ao" {{#if mode_analog_out}}selected="selected"{{/if}} >Analog Out</option>
+  <!--<option value="ao" {{#if mode_analog_out}}selected="selected"{{/if}} >Analog Out</option>-->
 </select>
 
 {{#if mode_digital_in}}
@@ -26,6 +26,7 @@
     <span>Digital Out: </span>
     <button id='set-high-{{id}}'>Set High</button>
     <button id='set-low-{{id}}'>Set Low</button>
+    <button id='set-quick-{{id}}'>Ping High</button>
   </div>
 {{/if}}
 
